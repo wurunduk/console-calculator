@@ -1,11 +1,8 @@
-// calculatorGod.cpp : Defines the entry point for the console application.
-//
-
-#include "stdafx.h"
 #include <vector>
 #include <string>
 #include <iostream>
 #include <Windows.h>
+#include <math.h>
 
 enum SYMBOLTYPE
 {
@@ -28,7 +25,7 @@ public:
 };
 
 template <typename T>
-std::vector<T> SubVector(std::vector<T> vector, int from, int to)
+std::vector<T> SubVector(std::vector<T> vector, unsigned int from,unsigned int to)
 {
 	if (from < 0 || to < from || to > vector.size() - 1)
 	{
@@ -37,7 +34,7 @@ std::vector<T> SubVector(std::vector<T> vector, int from, int to)
 	}
 
 	std::vector<T> newVector;
-	for (int i = from; i <= to; i++)
+	for (unsigned int i = from; i <= to; i++)
 	{
 		newVector.push_back(vector.at(i));
 	}
@@ -45,7 +42,7 @@ std::vector<T> SubVector(std::vector<T> vector, int from, int to)
 }
 
 template <typename T>
-std::vector<T> Replace(std::vector<T> vector, int from, int to, T thingy)
+std::vector<T> Replace(std::vector<T> vector, unsigned int from, unsigned int to, T thingy)
 {
 	if (from < 0 || to < from || to > vector.size() - 1)
 	{
@@ -64,7 +61,7 @@ std::vector<T> Replace(std::vector<T> vector, int from, int to, T thingy)
 
 void print(std::vector<symbol> symbols)
 {
-	for (int i = 0; i < symbols.size(); i++)
+	for (unsigned int i = 0; i < symbols.size(); i++)
 	{
 		if (symbols.at(i).type == SYMBOLTYPE::number)
 		{
@@ -118,7 +115,7 @@ public:
 
 	equation(std::string input)
 	{
-		for (int i = 0; i < input.size(); i++)
+		for (unsigned int i = 0; i < input.size(); i++)
 		{
 			char curChar = input.at(i);
 			if (curChar >= '0' && curChar <= '9')
@@ -126,7 +123,7 @@ public:
 				int num = curChar - '0';
 				if (i < input.size() - 1)
 				{
-					for (int x = i+1; x < input.size(); x++, i++)
+					for (unsigned int x = i+1; x < input.size(); x++, i++)
 					{
 						if (input.at(x) >= '0' && input.at(x) <= '9')
 						{
@@ -179,16 +176,13 @@ public:
 
 symbol simplify(std::vector<symbol> symbols)
 {
-	//std::cout << symbols.size() << std::endl;
-	//print(symbols);
 	int lastOpenBracket = -1;
 
-	//int lastOperation = -1;
 	while (symbols.size() != 1)
 	{
 		bool doSimpleMath = true;
 		bool doNonSimpleMath = true;
-		for (int i = 0; i < symbols.size(); i++)
+		for (unsigned int i = 0; i < symbols.size(); i++)
 		{
 			symbol* curSymbol = &symbols.at(i);
 			if (curSymbol->type == SYMBOLTYPE::bracket)
@@ -208,8 +202,6 @@ symbol simplify(std::vector<symbol> symbols)
 					else
 					{
 						std::vector<symbol> v = SubVector(symbols, lastOpenBracket + 1, i - 1);
-						print(v);
-						std::cout << " = ";
 						symbols = Replace(symbols, lastOpenBracket, i, simplify(v));
 						print(symbols);
 					}
@@ -220,7 +212,7 @@ symbol simplify(std::vector<symbol> symbols)
 
 		if (doNonSimpleMath)
 		{
-			for (int i = 0; i < symbols.size(); i++)
+			for (unsigned int i = 0; i < symbols.size(); i++)
 			{
 				symbol* curSymbol = &symbols.at(i);
 				if (curSymbol->type == SYMBOLTYPE::operation && curSymbol->value == 2)
@@ -253,7 +245,7 @@ symbol simplify(std::vector<symbol> symbols)
 
 		if (doSimpleMath)
 		{
-			for (int i = 0; i < symbols.size()-1; i++)
+			for (unsigned int i = 0; i < symbols.size()-1; i++)
 			{
 				symbol* curSymbol = &symbols.at(i);
 				if (curSymbol->type == SYMBOLTYPE::operation && curSymbol->value == 0)
